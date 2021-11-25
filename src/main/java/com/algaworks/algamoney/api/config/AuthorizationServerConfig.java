@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -21,12 +22,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("angular")
-                .secret("{noop}@ngul@r0")
+                .secret(passwordEncoder.encode("@ngul@r0"))
                 .scopes("read","write")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60)
