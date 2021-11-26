@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,7 @@ public class PessoaResource {
         return pessoaRepository.findAll();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPessoaPeloId(@PathVariable Long id){
         Optional<Pessoa> pessoa = pessoaRepository.findById(id);
@@ -45,6 +47,7 @@ public class PessoaResource {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
     @PostMapping
     public ResponseEntity<Pessoa> criarPessoa(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
@@ -54,18 +57,21 @@ public class PessoaResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removerCategoria(@PathVariable Long id){
         pessoaRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('write')")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarPessoa(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa){
         Pessoa pessoaAuxiliar = pessoaService.atualizar(id, pessoa);
         return ResponseEntity.ok(pessoaAuxiliar);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('write')")
     @PutMapping("/{id}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarPropriedadeAtivo(@PathVariable Long id, @RequestBody Boolean ativo){
