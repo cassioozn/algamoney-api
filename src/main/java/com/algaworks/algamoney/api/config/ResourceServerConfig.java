@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,14 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
 
-import javax.swing.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableResourceServer
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -32,7 +28,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
     }
 
     @Override
@@ -41,6 +37,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/categorias").permitAll()
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .httpBasic().and()
                 .csrf().disable();
     }
 
@@ -50,12 +47,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public MethodSecurityExpressionHandler createExpressionHandler(){
-        return new OAuth2MethodSecurityExpressionHandler();
-    }
 }
