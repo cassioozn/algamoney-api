@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -31,14 +32,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .scopes("read","write")
                     .authorizedGrantTypes("password", "refresh_token")
                     .accessTokenValiditySeconds(1800)
-                    .refreshTokenValiditySeconds(1800)
-                .and()
-                    .withClient("mobile")
-                    .secret(passwordEncoder.encode("m0b1l30"))
-                    .scopes("read")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .accessTokenValiditySeconds(1800)
-                    .refreshTokenValiditySeconds(1800);
+                    .refreshTokenValiditySeconds(3600 * 12);
     }
 
     @Override
@@ -57,7 +51,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
-    public TokenStore tokenStore(){
-        return new JwtTokenStore(accessTokenConverter());
+    public TokenStore tokenStore() {
+        return new InMemoryTokenStore();
     }
 }
