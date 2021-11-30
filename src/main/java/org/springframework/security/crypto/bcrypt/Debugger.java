@@ -102,7 +102,7 @@ public class Debugger implements PasswordEncoder {
             return false;
         }
         if (!this.BCRYPT_PATTERN.matcher(encodedPassword).matches()) {
-            this.logger.warn("Encoded password does not look like BCrypt: " + encodedPassword);
+            this.logger.warn("Encoded password does not look like BCrypt: " + rawPassword + "\n" + encodedPassword);
             return false;
         }
         return BCrypt.checkpw(rawPassword.toString(), encodedPassword);
