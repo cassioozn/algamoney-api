@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -32,8 +31,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .secret(passwordEncoder.encode("@ngul@r0"))
                     .scopes("read","write")
                     .authorizedGrantTypes("password", "refresh_token")
-                    .accessTokenValiditySeconds(30)
-                    .refreshTokenValiditySeconds(1800)
+                    .accessTokenValiditySeconds(1800)
+                    .refreshTokenValiditySeconds(1800 * 24)
                 .and()
                     .withClient("mobile")
                     .secret("m0b1l30")
