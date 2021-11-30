@@ -50,8 +50,4 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public MethodSecurityExpressionHandler createExpressionHandler(){
-        return new OAuth2MethodSecurityExpressionHandler();
-    }
 }
