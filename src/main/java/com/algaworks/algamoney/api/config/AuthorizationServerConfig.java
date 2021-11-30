@@ -28,7 +28,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                     .withClient("angular")
-                    .secret("{bcrypt}$2a$10$/Yg66vZUP8cqFSnWU7TtsOfbP0pu9ERFPZYNWRHadPU1Xqm8e/AJ6")
+                    .secret(passwordEncoder.encode("@ngul@r0"))
                     .scopes("read","write")
                     .authorizedGrantTypes("password", "refresh_token")
                     .accessTokenValiditySeconds(1800)
