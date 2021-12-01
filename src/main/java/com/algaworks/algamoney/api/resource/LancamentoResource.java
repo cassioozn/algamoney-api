@@ -2,6 +2,7 @@ package com.algaworks.algamoney.api.resource;
 
 import com.algaworks.algamoney.api.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.api.model.Lancamento;
+import com.algaworks.algamoney.api.model.Pessoa;
 import com.algaworks.algamoney.api.repository.LancamentoRepository;
 import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
 import com.algaworks.algamoney.api.repository.projection.ResumoLancamento;
@@ -96,6 +97,19 @@ public class LancamentoResource {
         List<com.algaworks.algamoney.api.exceptionHandler.ExceptionHandler.Erro> erros = Arrays.asList(new com.algaworks.algamoney.api.exceptionHandler.ExceptionHandler.Erro(mensagemUsuario, mensagemDesenvolvedor));
 
         return ResponseEntity.badRequest().body(erros);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('write')")
+    @PutMapping("/{codigo}")
+    public ResponseEntity<?> atualizarLancamento(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento){
+        try{
+            Lancamento lancamentoAuxiliar = lancamentoService.atualizar(codigo, lancamento);
+            return ResponseEntity.ok(lancamentoAuxiliar);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.notFound().build();
+        }
+
+
     }
 
     @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
