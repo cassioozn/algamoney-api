@@ -3,9 +3,12 @@ package com.algaworks.algamoney.api.resource;
 import com.algaworks.algamoney.api.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.api.model.Pessoa;
 import com.algaworks.algamoney.api.repository.PessoaRepository;
+import com.algaworks.algamoney.api.repository.filter.PessoaFilter;
 import com.algaworks.algamoney.api.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,8 +33,8 @@ public class PessoaResource {
     private PessoaService pessoaService;
 
     @GetMapping
-    public List<Pessoa> listarTodasPessoas(){
-        return pessoaRepository.findAll();
+    public Page<Pessoa> pesquisar(PessoaFilter pessoaFilter, Pageable pageable){
+        return pessoaRepository.filtrar(pessoaFilter, pageable);
     }
 
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
